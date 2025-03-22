@@ -6,14 +6,19 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_authentication_app/src/config/navigation/main_navigation.dart';
+import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_authentication_app/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    const initialRoute = MainNavigationRouteNames.login;
+
+    final mainNavigation = MainNavigation(initialRoute: initialRoute);
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(mainNavigation: mainNavigation));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
