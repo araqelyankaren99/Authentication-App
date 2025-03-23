@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_authentication_app/objectbox.g.dart' as objectbox;
-import 'package:flutter_authentication_app/objectbox.g.dart';
+import 'package:flutter_authentication_app/src/data/repository/user.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.dart';
 import 'package:mobx/mobx.dart' as mobx;
 import 'package:mobx/mobx.dart';
@@ -12,9 +11,67 @@ enum AuthMode { login, signup }
 class LoginStore = _LoginStoreBase with _$LoginStore;
 
 abstract class _LoginStoreBase with mobx.Store {
-  final objectbox.Box<User> _userBox;
+  final UserRepository _userRepository;
 
-  _LoginStoreBase(this._userBox);
+  _LoginStoreBase(this._userRepository);
+
+  @mobx.action
+  Future<void> addUser() async {
+    if (username.isEmpty || password.isEmpty || email.isEmpty) {
+      hasUsernameError = username.isEmpty;
+      hasEmailError = email.isEmpty;
+      hasPasswordError = password.isEmpty;
+      // errorMessage = 'All fields are required';
+      return;
+    }
+
+    hasPasswordError = false;
+    hasUsernameError = false;
+    hasEmailError = false;
+
+    try {
+      isLoading = true;
+      final user = User(
+        username: username,
+        password: password,
+        email: email,
+      );
+      await _userRepository.addUser(user);
+      currentUser = user;
+      // errorMessage = null;
+    } catch (e) {
+      // errorMessage = 'Failed to add user: $e';
+      currentUser = null;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @mobx.action
+  Future<User?> getUser() async {
+    if (username.isEmpty || password.isEmpty) {
+      hasUsernameError = username.isEmpty;
+      hasPasswordError = password.isEmpty;
+      // errorMessage = 'Username and password are required';
+      return null;
+    }
+
+    hasUsernameError = false;
+    hasPasswordError = false;
+
+    try {
+      isLoading = true;
+      final user = await _userRepository.getUser(username, password);
+      currentUser = user;
+      // errorMessage = null;
+    } catch (e) {
+      currentUser = null;
+      // errorMessage = 'Error fetching user: $e';
+    } finally {
+      isLoading = false;
+    }
+    return currentUser;
+  }
 
   @mobx.observable
   User? currentUser;
@@ -56,30 +113,6 @@ abstract class _LoginStoreBase with mobx.Store {
   @mobx.action
   Future<void> forgetPassword() async {}
 
-  @mobx.action
-  Future<void> addUser() async {
-    if(username.isEmpty || password.isEmpty || email.isEmpty){
-      hasUsernameError = username.isEmpty;
-      hasEmailError = email.isEmpty;
-      hasPasswordError = password.isEmpty;
-      return;
-    }
-    hasPasswordError = false;
-    hasUsernameError = false;
-    hasEmailError = false;
-    try {
-      isLoading = true;
-      final user = User(
-        username: username,
-        password: password,
-        email: email,
-      );
-      await _userBox.putAsync(user);
-    }
-    finally {
-      isLoading = false;
-    }
-  }
 
   @mobx.action
   void onUsernameChanged(String username){
@@ -125,38 +158,5 @@ abstract class _LoginStoreBase with mobx.Store {
     emailController.clear();
     passwordController.clear();
     usernameController.clear();
-  }
-
-  @mobx.action
-  Future<User?> getUser() async {
-    if(username.isEmpty || password.isEmpty){
-      hasUsernameError = username.isEmpty;
-      hasPasswordError = password.isEmpty;
-      return null;
-    }
-    hasUsernameError = false;
-    hasPasswordError = false;
-
-      try {
-        isLoading = true;
-      final query = _userBox
-          .query(User_.username.equals(username) & User_.password.equals(password))
-          .build();
-      final user = query.findFirst();
-      query.close();
-
-      if (user != null) {
-        currentUser = user;
-      } else {
-        currentUser = null;
-      }
-    } catch (e) {
-      currentUser = null;
-    }
-    finally {
-        isLoading = false;
-    }
-    return currentUser;
-
   }
 }

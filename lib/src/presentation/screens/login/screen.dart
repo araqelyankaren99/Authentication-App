@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
+import 'package:flutter_authentication_app/src/data/repository/user.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
@@ -31,7 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _userStore = LoginStore(getUserBox());
+    final userRepository = UserRepositoryImpl(getUserBox());
+    _userStore = LoginStore(userRepository);
     _setLoginStore(_userStore);
   }
 
