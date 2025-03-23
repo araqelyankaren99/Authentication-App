@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_authentication_app/src/config/theme/theme.dart';
 
 typedef OnChanged = void Function(String);
 
@@ -12,9 +13,6 @@ class CustomInputWidget extends StatelessWidget {
     this.textInputAction = TextInputAction.next,
     this.hasError = false,
     this.isPassword = false,
-    required this.textColor,
-    required this.borderColor,
-    required this.errorBorderColor,
     this.showCursor = true,
     this.radius = 16,
     this.hintText,
@@ -29,15 +27,16 @@ class CustomInputWidget extends StatelessWidget {
   final bool isPassword;
   final TextInputAction textInputAction;
   final double radius;
-  final Color textColor;
-  final Color borderColor;
-  final Color errorBorderColor;
   final bool showCursor;
   final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<AppThemeExtension>()!;
+    final borderColor = theme.borderColor;
+    final errorBorderColor = theme.errorColor;
     final effectiveBorderColor = hasError ? errorBorderColor : borderColor;
+    final textColor = theme.hintTextColor;
     return TextField(
       controller: controller,
       autocorrect: false,

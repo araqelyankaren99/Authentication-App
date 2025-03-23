@@ -9,6 +9,7 @@ class AppColors {
   static const waveLightColor = Color(0xFFBFDBFE);
   static const waveDarkColor = Color(0xFF1E293B);
 
+
   static const loginAndSignUpButtonActiveLightColor = Color(0xFF1A5CFF);
   static const loginAndSignUpButtonActiveDarkColor = Color(0xFF1A5CFF);
   static const loginAndSignUpButtonInactiveLightColor = Colors.lightBlue;

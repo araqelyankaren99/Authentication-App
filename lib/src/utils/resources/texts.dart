@@ -7,4 +7,9 @@ abstract class AppTexts {
   static const loginButtonText = 'Login';
   static const signUpButtonText = 'Sign-up';
   static const forgotPasswordButtonText = 'Forgot password?';
+  static const userNotFound = 'User not found';
+  static const userAdded = 'User added successfully!!!';
+  static const userGetFailed = 'User not found or credentials invalid';
+  static const userExists = 'User already exists with username';
+  static const hello = 'Hello';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
+import 'package:flutter_authentication_app/src/config/theme/theme.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/empty.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_authentication_app/src/presentation/widgets/forget_butto
 import 'package:flutter_authentication_app/src/presentation/widgets/keyboard_dismissable.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper.dart';
-import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
 import 'package:flutter_authentication_app/src/utils/resources/texts.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
@@ -43,9 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final theme = Theme.of(context).extension<AppThemeExtension>();
+    return Scaffold(
+      backgroundColor: theme?.backgroundColor,
       resizeToAvoidBottomInset: false,
-      body: Stack(
+      body: const Stack(
         children: [
           KeyboardDismissibleWidget(
             child: Column(
@@ -88,16 +90,15 @@ class _TopWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
+    final theme = Theme.of(context).extension<AppThemeExtension>()!;
+    return Expanded(
       child: Stack(
         children: [
           ClipPath(
             clipper: WaveClipper(),
-            child: SizedBox.expand(
-              child: ColoredBox(color: AppColors.waveLightColor),
-            ),
+            child: SizedBox.expand(child: ColoredBox(color: theme.waveColor)),
           ),
-          _LogoImageWidget(),
+          const _LogoImageWidget(),
         ],
       ),
     );
@@ -112,10 +113,11 @@ class _LoaderWidget extends StatelessWidget {
     return Observer(
       builder: (_) {
         final store = getLoginStore();
+        final theme = Theme.of(context).extension<AppThemeExtension>()!;
         return store.isLoading
             ? SizedBox.expand(
               child: ColoredBox(
-                color: AppColors.backgroundLightColor.withAlpha(
+                color: theme.backgroundColor.withAlpha(
                   (0.5 * 255).toInt(),
                 ),
                 child: const Center(child: CircularProgressIndicator()),
@@ -138,9 +140,6 @@ class _UsernameInputWidget extends StatelessWidget {
         return CustomInputWidget(
           controller: store.usernameController,
           onChanged: store.onUsernameChanged,
-          textColor: AppColors.hintTextLightColor,
-          borderColor: AppColors.borderLightColor,
-          errorBorderColor: AppColors.errorLightColor,
           hintText: AppTexts.usernameHintText,
           hasError: store.hasUsernameError,
         );
@@ -163,9 +162,6 @@ class _PasswordInputWidget extends StatelessWidget {
             controller: store.passwordController,
             onChanged: store.onPasswordChanged,
             isPassword: true,
-            textColor: AppColors.hintTextLightColor,
-            borderColor: AppColors.borderLightColor,
-            errorBorderColor: AppColors.errorLightColor,
             hintText: AppTexts.passwordHintText,
             hasError: store.hasPasswordError,
           );
@@ -189,9 +185,6 @@ class _EmailInputWidget extends StatelessWidget {
               ? CustomInputWidget(
                 controller: store.emailController,
                 onChanged: store.onEmailChanged,
-                textColor: AppColors.hintTextLightColor,
-                borderColor: AppColors.borderLightColor,
-                errorBorderColor: AppColors.errorLightColor,
                 hintText: AppTexts.emailHintText,
                 hasError: store.hasEmailError,
               )
@@ -212,16 +205,18 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
       child: Observer(
         builder: (_) {
           final store = getLoginStore();
+          final theme = Theme.of(context).extension<AppThemeExtension>()!;
+
           return LoginAndSignUpButton(
             authMode: store.authMode,
             onLoginTap: store.onLoginSelectorTap,
             onSignUpTap: store.onSignUpButtonSelectorTap,
-            activeColor: Color(0xFF1A5CFF),
-            inactiveColor: Colors.lightBlue,
-            textActiveColor: Colors.white,
-            textInactiveColor: Colors.black,
-            loginText: 'Login',
-            signUpText: 'Sign Up',
+            activeColor: theme.loginAndSignUpButtonActiveColor,
+            inactiveColor: theme.loginAndSignUpButtonInactiveColor,
+            textActiveColor: theme.loginAndSignUpButtonActiveTextColor,
+            textInactiveColor: theme.loginAndSignUpButtonInactiveTextColor,
+            loginText: AppTexts.loginButtonText,
+            signUpText: AppTexts.signUpButtonText,
           );
         },
       ),
@@ -265,10 +260,24 @@ class _LoginButton extends StatelessWidget {
     return Observer(
       builder: (_) {
         final store = getLoginStore();
+        final theme = Theme.of(context).extension<AppThemeExtension>()!;
         return store.authMode == AuthMode.login
             ? ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                  theme.loginAndSignUpButtonActiveColor,
+                ),
+                foregroundColor: WidgetStateProperty.all(
+                  theme.loginAndSignUpButtonActiveTextColor,
+                ),
+              ),
               onPressed: () => _onLoginButtonTap(context),
-              child: Text('Login'),
+              child: Text(
+                AppTexts.loginButtonText,
+                style: TextStyle(
+                  color: theme.loginAndSignUpButtonActiveTextColor,
+                ),
+              ),
             )
             : const EmptyWidget();
       },
@@ -278,19 +287,19 @@ class _LoginButton extends StatelessWidget {
   Future<void> _onLoginButtonTap(BuildContext context) async {
     final store = getLoginStore();
     final user = await store.getUser();
-    if(store.errorMessage != null){
+    if (store.errorMessage != null) {
       return;
     }
 
     if (user != null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('User not found')));
+      ).showSnackBar(SnackBar(content: Text(AppTexts.userNotFound),),);
       return;
     }
     Navigator.of(context).pushNamedAndRemoveUntil(
       MainNavigationRouteNames.home,
-          (_) => false,
+      (_) => false,
       arguments: user,
     );
   }
@@ -306,10 +315,19 @@ class _SignUpButton extends StatelessWidget {
       child: Observer(
         builder: (_) {
           final store = getLoginStore();
+          final theme = Theme.of(context).extension<AppThemeExtension>()!;
           return store.authMode == AuthMode.signup
               ? ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    theme.loginAndSignUpButtonInactiveColor,
+                  ),
+                  foregroundColor: WidgetStateProperty.all(
+                    theme.loginAndSignUpButtonInactiveTextColor,
+                  ),
+                ),
                 onPressed: () => _onSignUpButtonTap(context),
-                child: Text('Sign Up'),
+                child: Text(AppTexts.signUpButtonText,style: TextStyle(color: theme.loginAndSignUpButtonInactiveTextColor),),
               )
               : const EmptyWidget();
         },
@@ -320,18 +338,17 @@ class _SignUpButton extends StatelessWidget {
   Future<void> _onSignUpButtonTap(BuildContext context) async {
     try {
       await getLoginStore().addUser();
-    }
-    on Exception catch(error) {
+    } on Exception catch (error) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
     final store = getLoginStore();
-    if(store.errorMessage != null){
+    if (store.errorMessage != null) {
       return;
     }
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text('User added successfully')));
+    ).showSnackBar(SnackBar(content: Text(AppTexts.userAdded)));
   }
 }

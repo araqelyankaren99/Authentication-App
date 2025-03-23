@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/config/navigation/main_navigation.dart';
 import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
+import 'package:flutter_authentication_app/src/config/theme/theme.dart';
 import 'package:flutter_authentication_app/src/data/repository/user.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:get_it/get_it.dart';
@@ -51,6 +52,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: GetIt.I<MainNavigation>().initialRoute,
       onGenerateRoute: GetIt.I<MainNavigation>().onGenerateRoute,
+      theme: ThemeData.light().copyWith(
+        extensions: [AppThemeExtension.lightTheme],
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        extensions: [AppThemeExtension.darkTheme],
+      ),
     );
   }
 }
