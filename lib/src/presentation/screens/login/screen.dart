@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
-import 'package:flutter_authentication_app/src/data/repository/user.dart';
-import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/empty.dart';
@@ -12,6 +10,7 @@ import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper
 import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
 import 'package:flutter_authentication_app/src/utils/resources/texts.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 
 LoginStore? _loginStore;
 
@@ -32,8 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    final userRepository = UserRepositoryImpl(getUserBox());
-    _userStore = LoginStore(userRepository);
+    _userStore = GetIt.I<LoginStore>();
     _setLoginStore(_userStore);
   }
 
