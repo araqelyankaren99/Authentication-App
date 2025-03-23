@@ -278,21 +278,23 @@ class _LoginButton extends StatelessWidget {
   }
 
   Future<void> _onLoginButtonTap(BuildContext context) async {
-    if (getLoginStore().username.isEmpty || getLoginStore().password.isEmpty) {
+    final store = getLoginStore();
+    final user = await store.getUser();
+    if(store.errorMessage != null){
       return;
     }
-    final user = await getLoginStore().getUser();
+
     if (user != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        MainNavigationRouteNames.home,
-        (_) => false,
-        arguments: user,
-      );
-    } else {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('User not found')));
+      return;
     }
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      MainNavigationRouteNames.home,
+          (_) => false,
+      arguments: user,
+    );
   }
 }
 
@@ -318,13 +320,11 @@ class _SignUpButton extends StatelessWidget {
   }
 
   Future<void> _onSignUpButtonTap(BuildContext context) async {
-    if (getLoginStore().username.isEmpty ||
-        getLoginStore().password.isEmpty ||
-        getLoginStore().email.isEmpty) {
+    await getLoginStore().addUser();
+    final store = getLoginStore();
+    if(store.errorMessage != null){
       return;
     }
-
-    await getLoginStore().addUser();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('User added successfully')));

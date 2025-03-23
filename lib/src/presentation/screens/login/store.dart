@@ -21,7 +21,7 @@ abstract class _LoginStoreBase with mobx.Store {
       hasUsernameError = username.isEmpty;
       hasEmailError = email.isEmpty;
       hasPasswordError = password.isEmpty;
-      // errorMessage = 'All fields are required';
+      errorMessage = 'Please fill fields';
       return;
     }
 
@@ -38,9 +38,8 @@ abstract class _LoginStoreBase with mobx.Store {
       );
       await _userRepository.addUser(user);
       currentUser = user;
-      // errorMessage = null;
+      errorMessage = null;
     } catch (e) {
-      // errorMessage = 'Failed to add user: $e';
       currentUser = null;
     } finally {
       isLoading = false;
@@ -52,7 +51,7 @@ abstract class _LoginStoreBase with mobx.Store {
     if (username.isEmpty || password.isEmpty) {
       hasUsernameError = username.isEmpty;
       hasPasswordError = password.isEmpty;
-      // errorMessage = 'Username and password are required';
+      errorMessage = 'Please fill fields';
       return null;
     }
 
@@ -63,10 +62,10 @@ abstract class _LoginStoreBase with mobx.Store {
       isLoading = true;
       final user = await _userRepository.getUser(username, password);
       currentUser = user;
-      // errorMessage = null;
+      errorMessage = null;
     } catch (e) {
       currentUser = null;
-      // errorMessage = 'Error fetching user: $e';
+      errorMessage = null;
     } finally {
       isLoading = false;
     }
@@ -75,6 +74,9 @@ abstract class _LoginStoreBase with mobx.Store {
 
   @mobx.observable
   User? currentUser;
+
+  @mobx.observable
+  String? errorMessage;
 
   @mobx.observable
   String username = '';
