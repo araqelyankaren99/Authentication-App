@@ -3,6 +3,7 @@ import 'package:flutter_authentication_app/src/config/navigation/route_names.dar
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/keyboard_dismissable.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper.dart';
 import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
@@ -44,29 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          Column(
-            children: [
-              _TopWidget(),
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+          KeyboardDismissibleWidget(
+            child: Column(
+              children: [
+                _TopWidget(),
+                Expanded(
+                  flex: 2,
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 75),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _UsernameInputWidget(),
-                        _PasswordInputWidget(),
-                        _EmailInputWidget(),
-                        _LoginAndSignUpButtonWidget(),
-                      ],
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 75),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _UsernameInputWidget(),
+                          _PasswordInputWidget(),
+                          _EmailInputWidget(),
+                          _LoginAndSignUpButtonWidget(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           _LoaderWidget(),
         ],
