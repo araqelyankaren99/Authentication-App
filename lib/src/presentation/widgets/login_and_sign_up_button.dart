@@ -28,8 +28,8 @@ class LoginAndSignUpButton extends StatelessWidget {
   final String loginText;
   final String signUpText;
 
-
-
+  static const _duration = Duration(milliseconds: 300);
+  static const _curve = Curves.easeOut;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -68,9 +68,13 @@ class LoginAndSignUpButton extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: onLoginTap,
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: _duration,
+                    curve: _curve,
                     decoration: BoxDecoration(
-                      color: authMode == AuthMode.login ? activeColor : Colors.transparent,
+                      color: authMode == AuthMode.login
+                          ? activeColor
+                          : Colors.transparent,
                       borderRadius: authMode == AuthMode.login
                           ? BorderRadius.circular(borderRadius)
                           : BorderRadius.zero,
@@ -79,7 +83,9 @@ class LoginAndSignUpButton extends StatelessWidget {
                       child: Text(
                         loginText,
                         style: TextStyle(
-                          color: authMode == AuthMode.login ? textActiveColor : textInactiveColor,
+                          color: authMode == AuthMode.login
+                              ? textActiveColor
+                              : textInactiveColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -90,9 +96,13 @@ class LoginAndSignUpButton extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: onSignUpTap,
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: _duration,
+                    curve: _curve,
                     decoration: BoxDecoration(
-                      color: authMode == AuthMode.signup ? activeColor : Colors.transparent,
+                      color: authMode == AuthMode.signup
+                          ? activeColor
+                          : Colors.transparent,
                       borderRadius: authMode == AuthMode.signup
                           ? BorderRadius.circular(borderRadius)
                           : BorderRadius.zero,
@@ -101,7 +111,9 @@ class LoginAndSignUpButton extends StatelessWidget {
                       child: Text(
                         signUpText,
                         style: TextStyle(
-                          color: authMode == AuthMode.signup ? textActiveColor : textInactiveColor,
+                          color: authMode == AuthMode.signup
+                              ? textActiveColor
+                              : textInactiveColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
