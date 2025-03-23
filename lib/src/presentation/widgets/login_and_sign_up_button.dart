@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-enum AuthMode { login, signup }
+import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 
 class LoginAndSignUpButton extends StatelessWidget {
   const LoginAndSignUpButton({

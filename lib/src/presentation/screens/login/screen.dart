@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
-import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
 import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,11 +12,6 @@ class LoginScreen extends StatefulWidget {
 
 
 class _LoginScreenState extends State<LoginScreen> {
-// Enum to define the segments
-
-  // State to track the selected segment
-  AuthMode _selectedSegment = AuthMode.login;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
