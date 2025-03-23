@@ -22,79 +22,99 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(title: const Text('MobX with ObjectBox')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Stack(
           children: [
-            Observer(
-              builder:
-                  (_) => CustomInputWidget(
-                    onChanged: userStore.onUsernameChanged,
-                    textColor: AppColors.hintTextLightColor,
-                    borderColor: AppColors.borderLightColor,
-                    errorBorderColor: AppColors.errorLightColor,
-                    hintText: AppTexts.usernameHintText,
-                    hasError: userStore.hasUsernameError,
-                  ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Observer(
-                builder:
-                    (_) => CustomInputWidget(
-                      onChanged: userStore.onPasswordChanged,
-                      isPassword: true,
-                      textColor: AppColors.hintTextLightColor,
-                      borderColor: AppColors.borderLightColor,
-                      errorBorderColor: AppColors.errorLightColor,
-                      hintText: AppTexts.passwordHintText,
-                      hasError: userStore.hasPasswordError,
-                    ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Observer(
-                builder:
-                    (_) => CustomInputWidget(
-                      onChanged: userStore.onEmailChanged,
-                      textColor: AppColors.hintTextLightColor,
-                      borderColor: AppColors.borderLightColor,
-                      errorBorderColor: AppColors.errorLightColor,
-                      hintText: AppTexts.emailHintText,
-                      hasError: userStore.hasEmailError,
-                    ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await userStore.addUser();
-              },
-              child: const Text('Add User'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await userStore.getUser();
-              },
-              child: const Text('Get User'),
-            ),
-            const SizedBox(height: 20),
-            Observer(
-              builder:
-                  (_) => Column(
-                    children: [
-                      if (userStore.currentUser != null)
-                        Text(
-                          'User: ${userStore.currentUser!.username}, ${userStore.currentUser!.email}',
-                        )
-                      else
-                        const Text('No user found'),
-                      if (userStore.errorMessage != null)
-                        Text(
-                          userStore.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
+            Column(
+              children: [
+                Observer(
+                  builder:
+                      (_) => CustomInputWidget(
+                        onChanged: userStore.onUsernameChanged,
+                        textColor: AppColors.hintTextLightColor,
+                        borderColor: AppColors.borderLightColor,
+                        errorBorderColor: AppColors.errorLightColor,
+                        hintText: AppTexts.usernameHintText,
+                        hasError: userStore.hasUsernameError,
+                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 12),
+                  child: Observer(
+                    builder:
+                        (_) => CustomInputWidget(
+                          onChanged: userStore.onPasswordChanged,
+                          isPassword: true,
+                          textColor: AppColors.hintTextLightColor,
+                          borderColor: AppColors.borderLightColor,
+                          errorBorderColor: AppColors.errorLightColor,
+                          hintText: AppTexts.passwordHintText,
+                          hasError: userStore.hasPasswordError,
                         ),
-                    ],
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 12),
+                  child: Observer(
+                    builder:
+                        (_) => CustomInputWidget(
+                          onChanged: userStore.onEmailChanged,
+                          textColor: AppColors.hintTextLightColor,
+                          borderColor: AppColors.borderLightColor,
+                          errorBorderColor: AppColors.errorLightColor,
+                          hintText: AppTexts.emailHintText,
+                          hasError: userStore.hasEmailError,
+                        ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await userStore.addUser();
+                  },
+                  child: const Text('Add User'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await userStore.getUser();
+                  },
+                  child: const Text('Get User'),
+                ),
+                const SizedBox(height: 20),
+                Observer(
+                  builder:
+                      (_) => Column(
+                        children: [
+                          if (userStore.currentUser != null)
+                            Text(
+                              'User: ${userStore.currentUser!.username}, ${userStore.currentUser!.email}',
+                            )
+                          else
+                            const Text('No user found'),
+                          if (userStore.errorMessage != null)
+                            Text(
+                              userStore.errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                        ],
+                      ),
+                ),
+              ],
+            ),
+            Observer(
+              builder:
+                  (_) =>
+                      userStore.isLoading
+                          ? SizedBox.expand(
+                            child: ColoredBox(
+                              color: AppColors.backgroundLightColor.withAlpha(
+                                (0.5 * 255).toInt(),
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          )
+                          : const SizedBox.shrink(),
             ),
           ],
         ),
