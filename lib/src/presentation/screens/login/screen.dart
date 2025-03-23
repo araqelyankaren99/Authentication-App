@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper.dart';
 import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
 import 'package:flutter_authentication_app/src/utils/resources/texts.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+
+LoginStore? _loginStore;
+
+void _setLoginStore(LoginStore? store) => _loginStore = store;
+
+LoginStore getLoginStore() => _loginStore!;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,110 +22,191 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late final LoginStore _userStore;
+
+  @override
+  void initState() {
+    super.initState();
+    _userStore = LoginStore(getUserBox());
+    _setLoginStore(_userStore);
+  }
+
+  @override
+  void dispose() {
+    _setLoginStore(null);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userStore = LoginStore(getUserBox());
+    return const Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              _TopWidget(),
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 75),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _UsernameInputWidget(),
+                        _PasswordInputWidget(),
+                        _EmailInputWidget(),
+                        _LoginAndSignUpButtonWidget(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          _LoaderWidget(),
+        ],
+      ),
+    );
+  }
+}
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('MobX with ObjectBox')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Observer(
-                  builder:
-                      (_) => CustomInputWidget(
-                        onChanged: userStore.onUsernameChanged,
-                        textColor: AppColors.hintTextLightColor,
-                        borderColor: AppColors.borderLightColor,
-                        errorBorderColor: AppColors.errorLightColor,
-                        hintText: AppTexts.usernameHintText,
-                        hasError: userStore.hasUsernameError,
-                      ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 12),
-                  child: Observer(
-                    builder:
-                        (_) => CustomInputWidget(
-                          onChanged: userStore.onPasswordChanged,
-                          isPassword: true,
-                          textColor: AppColors.hintTextLightColor,
-                          borderColor: AppColors.borderLightColor,
-                          errorBorderColor: AppColors.errorLightColor,
-                          hintText: AppTexts.passwordHintText,
-                          hasError: userStore.hasPasswordError,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 12),
-                  child: Observer(
-                    builder:
-                        (_) => CustomInputWidget(
-                          onChanged: userStore.onEmailChanged,
-                          textColor: AppColors.hintTextLightColor,
-                          borderColor: AppColors.borderLightColor,
-                          errorBorderColor: AppColors.errorLightColor,
-                          hintText: AppTexts.emailHintText,
-                          hasError: userStore.hasEmailError,
-                        ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    await userStore.addUser();
-                  },
-                  child: const Text('Add User'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await userStore.getUser();
-                  },
-                  child: const Text('Get User'),
-                ),
-                const SizedBox(height: 20),
-                Observer(
-                  builder:
-                      (_) => Column(
-                        children: [
-                          if (userStore.currentUser != null)
-                            Text(
-                              'User: ${userStore.currentUser!.username}, ${userStore.currentUser!.email}',
-                            )
-                          else
-                            const Text('No user found'),
-                          if (userStore.errorMessage != null)
-                            Text(
-                              userStore.errorMessage!,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                        ],
-                      ),
-                ),
-              ],
+class _TopWidget extends StatelessWidget {
+  const _TopWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(child: ClipPath(
+      clipper: WaveClipper(),
+      child: Container(
+        color: AppColors.waveLightColor,
+      ),
+    ),
+    );
+  }
+}
+
+
+class _LoaderWidget extends StatelessWidget {
+  const _LoaderWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (_) {
+        final store = getLoginStore();
+        return store.isLoading
+            ? SizedBox.expand(
+          child: ColoredBox(
+            color: AppColors.backgroundLightColor.withAlpha(
+              (0.5 * 255).toInt(),
             ),
-            Observer(
-              builder:
-                  (_) =>
-                      userStore.isLoading
-                          ? SizedBox.expand(
-                            child: ColoredBox(
-                              color: AppColors.backgroundLightColor.withAlpha(
-                                (0.5 * 255).toInt(),
-                              ),
-                              child: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          )
-                          : const SizedBox.shrink(),
-            ),
-          ],
-        ),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+        )
+            : const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+class _UsernameInputWidget extends StatelessWidget {
+  const _UsernameInputWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (_) {
+        final store = getLoginStore();
+        return CustomInputWidget(
+          onChanged: store.onUsernameChanged,
+          textColor: AppColors.hintTextLightColor,
+          borderColor: AppColors.borderLightColor,
+          errorBorderColor: AppColors.errorLightColor,
+          hintText: AppTexts.usernameHintText,
+          hasError: store.hasUsernameError,
+        );
+      },
+    );
+  }
+}
+
+class _PasswordInputWidget extends StatelessWidget {
+  const _PasswordInputWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Observer(
+        builder: (_) {
+          final store = getLoginStore();
+          return CustomInputWidget(
+            onChanged: store.onPasswordChanged,
+            isPassword: true,
+            textColor: AppColors.hintTextLightColor,
+            borderColor: AppColors.borderLightColor,
+            errorBorderColor: AppColors.errorLightColor,
+            hintText: AppTexts.passwordHintText,
+            hasError: store.hasPasswordError,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _EmailInputWidget extends StatelessWidget {
+  const _EmailInputWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Observer(
+        builder: (_) {
+          final store = getLoginStore();
+          return store.authMode == AuthMode.signup
+              ? CustomInputWidget(
+            onChanged: store.onEmailChanged,
+            textColor: AppColors.hintTextLightColor,
+            borderColor: AppColors.borderLightColor,
+            errorBorderColor: AppColors.errorLightColor,
+            hintText: AppTexts.emailHintText,
+            hasError: store.hasEmailError,
+          )
+              : const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+}
+
+class _LoginAndSignUpButtonWidget extends StatelessWidget {
+  const _LoginAndSignUpButtonWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 30),
+      child: Observer(
+        builder: (_) {
+          final store = getLoginStore();
+          return LoginAndSignUpButton(
+            authMode: store.authMode,
+            onLoginTap: store.onLoginTap,
+            onSignUpTap: store.onSignUpButtonTapTap,
+            activeColor: Color(0xFF1A5CFF),
+            inactiveColor: Colors.lightBlue,
+            textActiveColor: Colors.white,
+            textInactiveColor: Colors.black,
+            loginText: 'Login',
+            signUpText: 'Sign Up',
+          );
+        },
       ),
     );
   }

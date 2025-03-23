@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: mainNavigation.initialRoute,
       onGenerateRoute: mainNavigation.onGenerateRoute,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
