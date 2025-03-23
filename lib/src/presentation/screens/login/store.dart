@@ -43,6 +43,8 @@ abstract class _LoginStoreBase with mobx.Store {
   @mobx.observable
   bool isLoading = false;
 
+  @mobx.action
+  Future<void> forgetPassword() async {}
 
   @mobx.action
   Future<void> addUser() async {

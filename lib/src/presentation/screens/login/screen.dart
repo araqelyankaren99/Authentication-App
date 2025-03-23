@@ -4,6 +4,7 @@ import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/empty.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/forget_button.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/keyboard_dismissable.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper.dart';
@@ -64,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _PasswordInputWidget(),
                           _EmailInputWidget(),
                           _LoginAndSignUpButtonWidget(),
+                          _ForgetButtonWidget(),
                         ],
                       ),
                     ),
@@ -89,7 +91,9 @@ class _TopWidget extends StatelessWidget {
         children: [
           ClipPath(
             clipper: WaveClipper(),
-            child: SizedBox.expand(child: ColoredBox(color: AppColors.waveLightColor),),
+            child: SizedBox.expand(
+              child: ColoredBox(color: AppColors.waveLightColor),
+            ),
           ),
           _LogoImageWidget(),
         ],
@@ -251,6 +255,20 @@ class _LogoImageWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 25, left: 12),
         child: Image.asset('assets/images/logo.png'),
+      ),
+    );
+  }
+}
+
+class _ForgetButtonWidget extends StatelessWidget {
+  const _ForgetButtonWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30),
+      child: Center(
+        child: ForgetButtonWidget(onTap: getLoginStore().forgetPassword),
       ),
     );
   }
