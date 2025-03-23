@@ -80,10 +80,15 @@ class _TopWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ClipPath(
-        clipper: WaveClipper(),
-        child: Container(color: AppColors.waveLightColor),
+    return const Expanded(
+      child: Stack(
+        children: [
+          ClipPath(
+            clipper: WaveClipper(),
+            child: SizedBox.expand(child: ColoredBox(color: AppColors.waveLightColor),),
+          ),
+          _LogoImageWidget(),
+        ],
       ),
     );
   }
@@ -218,14 +223,31 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
         (_) => false,
         arguments: user,
       );
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User not found')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('User not found')));
     }
   }
 
-  Future<void> _onSignUpButtonTap(BuildContext context) async{
+  Future<void> _onSignUpButtonTap(BuildContext context) async {
     await getLoginStore().onSignUpButtonTapTap();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User added successfully')));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('User added successfully')));
+  }
+}
+
+class _LogoImageWidget extends StatelessWidget {
+  const _LogoImageWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 25, left: 12),
+        child: Image.asset('assets/images/logo.png'),
+      ),
+    );
   }
 }
