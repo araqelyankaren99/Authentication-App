@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
+import 'package:flutter_authentication_app/src/utils/resources/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,32 +27,21 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
-          child: LoginAndSignUpButton(
-            authMode: _selectedSegment,
-            onLoginTap: _onLoginTap,
-            onSignUpTap: _onSignUpTap,
-            activeColor: Color(0xFF1A5CFF),
-            inactiveColor: Colors.lightBlue,
-            textActiveColor: Colors.white,
-            textInactiveColor: Colors.black,
-            loginText: 'Login',
-            signUpText : 'Sign Up',
+          child: CustomInputWidget(
+            onChanged: _onChanged,
+            textColor: AppColors.hintTextLightColor,
+            borderColor: AppColors.borderLightColor,
+            errorBorderColor: AppColors.errorLightColor,
+            hintText: 'Username',
+            hasError: true,
           ),
         ),
       ),
     );
   }
 
-  void _onLoginTap() {
-    setState(() {
-      _selectedSegment = AuthMode.login;
-    });
-  }
+  void _onChanged(String text){
 
-  void _onSignUpTap() {
-    setState(() {
-      _selectedSegment = AuthMode.signup;
-    });
   }
 }
 

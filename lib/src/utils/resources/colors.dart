@@ -25,4 +25,7 @@ class AppColors {
 
   static const forgetButtonLightColor = Color(0xFF1A5CFF);
   static const forgetButtonDarkColor = Colors.white;
+
+  static const errorLightColor = Color(0xFFB23636);
+  static const errorDarkColor = Color(0xFFB23636);
 }
