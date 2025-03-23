@@ -64,6 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           _UsernameInputWidget(),
                           _PasswordInputWidget(),
                           _EmailInputWidget(),
+                          _LoginButton(),
+                          _SignUpButton(),
                           _LoginAndSignUpButtonWidget(),
                           _ForgetButtonWidget(),
                         ],
@@ -209,8 +211,8 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
           final store = getLoginStore();
           return LoginAndSignUpButton(
             authMode: store.authMode,
-            onLoginTap: () => _onLoginTap(context),
-            onSignUpTap: () => _onSignUpButtonTap(context),
+            onLoginTap: store.onLoginSelectorTap,
+            onSignUpTap: store.onSignUpButtonSelectorTap,
             activeColor: Color(0xFF1A5CFF),
             inactiveColor: Colors.lightBlue,
             textActiveColor: Colors.white,
@@ -221,28 +223,6 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
         },
       ),
     );
-  }
-
-  Future<void> _onLoginTap(BuildContext context) async {
-    final user = await getLoginStore().onLoginTap();
-    if (user != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        MainNavigationRouteNames.home,
-        (_) => false,
-        arguments: user,
-      );
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('User not found')));
-    }
-  }
-
-  Future<void> _onSignUpButtonTap(BuildContext context) async {
-    await getLoginStore().onSignUpButtonTapTap();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('User added successfully')));
   }
 }
 
@@ -271,5 +251,75 @@ class _ForgetButtonWidget extends StatelessWidget {
         child: ForgetButtonWidget(onTap: getLoginStore().forgetPassword),
       ),
     );
+  }
+}
+
+class _LoginButton extends StatelessWidget {
+  const _LoginButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (_) {
+        final store = getLoginStore();
+        return store.authMode == AuthMode.login
+            ? ElevatedButton(
+              onPressed: () => _onLoginButtonTap(context),
+              child: Text('Login'),
+            )
+            : const EmptyWidget();
+      },
+    );
+  }
+
+  Future<void> _onLoginButtonTap(BuildContext context) async {
+    if(getLoginStore().username.isEmpty || getLoginStore().password.isEmpty){
+      return;
+    }
+    final user = await getLoginStore().getUser();
+    if (user != null) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        MainNavigationRouteNames.home,
+        (_) => false,
+        arguments: user,
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('User not found')));
+    }
+  }
+}
+
+class _SignUpButton extends StatelessWidget {
+  const _SignUpButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Observer(
+        builder: (_) {
+          final store = getLoginStore();
+          return store.authMode == AuthMode.signup
+              ? ElevatedButton(
+                onPressed: () => _onSignUpButtonTap(context),
+                child: Text('Sign Up'),
+              )
+              : const EmptyWidget();
+        },
+      ),
+    );
+  }
+
+  Future<void> _onSignUpButtonTap(BuildContext context) async {
+    if(getLoginStore().username.isEmpty || getLoginStore().password.isEmpty || getLoginStore().email.isEmpty){
+      return;
+    }
+
+      await getLoginStore().addUser();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('User added successfully')));
   }
 }

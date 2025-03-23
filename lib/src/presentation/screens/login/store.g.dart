@@ -206,22 +206,22 @@ mixin _$LoginStore on _LoginStoreBase {
   }
 
   @override
-  Future<User?> onLoginTap() async{
+  void onLoginSelectorTap(){
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.onLoginTap');
     try {
-      return (await super.onLoginTap());
+      return super.onLoginSelectorTap();
     } finally {
       _$_LoginStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  Future<void> onSignUpButtonTapTap() async{
+  void onSignUpButtonSelectorTap() async{
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.onSignUpButtonTapTap');
     try {
-      return (await super.onSignUpButtonTapTap());
+      return super.onSignUpButtonSelectorTap();
     } finally {
       _$_LoginStoreBaseActionController.endAction(_$actionInfo);
     }

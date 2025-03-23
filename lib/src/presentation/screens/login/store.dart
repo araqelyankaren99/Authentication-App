@@ -90,11 +90,7 @@ abstract class _LoginStoreBase with mobx.Store {
   }
 
   @mobx.action
-  Future<User?> onLoginTap() async{
-    if(authMode == AuthMode.login){
-      final user = await getUser();
-      return user;
-    }
+  void onLoginSelectorTap() {
     email = '';
     password = '';
     username = '';
@@ -102,15 +98,10 @@ abstract class _LoginStoreBase with mobx.Store {
     hasUsernameError = false;
     hasEmailError = false;
     authMode = AuthMode.login;
-    return null;
   }
 
   @mobx.action
-  Future<void> onSignUpButtonTapTap() async{
-    if(authMode == AuthMode.signup){
-      await addUser();
-      return;
-    }
+  void onSignUpButtonSelectorTap(){
     email = '';
     password = '';
     username = '';
