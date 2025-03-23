@@ -121,22 +121,6 @@ mixin _$LoginStore on _LoginStoreBase {
     });
   }
 
-  late final _$errorMessageAtom =
-      Atom(name: '_LoginStoreBase.errorMessage', context: context);
-
-  @override
-  String? get errorMessage {
-    _$errorMessageAtom.reportRead();
-    return super.errorMessage;
-  }
-
-  @override
-  set errorMessage(String? value) {
-    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
-      super.errorMessage = value;
-    });
-  }
-
   late final _$authModeAtom =
       Atom(name: '_LoginStoreBase.authMode', context: context);
 
@@ -181,7 +165,7 @@ mixin _$LoginStore on _LoginStoreBase {
       AsyncAction('_LoginStoreBase.getUser', context: context);
 
   @override
-  Future<void> getUser() {
+  Future<User?> getUser() {
     return _$getUserAsyncAction.run(() => super.getUser());
   }
 
@@ -222,22 +206,22 @@ mixin _$LoginStore on _LoginStoreBase {
   }
 
   @override
-  void onLoginTap() {
+  Future<User?> onLoginTap() async{
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.onLoginTap');
     try {
-      return super.onLoginTap();
+      return (await super.onLoginTap());
     } finally {
       _$_LoginStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void onSignUpButtonTapTap() {
+  Future<void> onSignUpButtonTapTap() async{
     final _$actionInfo = _$_LoginStoreBaseActionController.startAction(
         name: '_LoginStoreBase.onSignUpButtonTapTap');
     try {
-      return super.onSignUpButtonTapTap();
+      return (await super.onSignUpButtonTapTap());
     } finally {
       _$_LoginStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -253,7 +237,6 @@ email: ${email},
 hasUsernameError: ${hasUsernameError},
 hasPasswordError: ${hasPasswordError},
 hasEmailError: ${hasEmailError},
-errorMessage: ${errorMessage},
 authMode: ${authMode},
 isLoading: ${isLoading}
     ''';

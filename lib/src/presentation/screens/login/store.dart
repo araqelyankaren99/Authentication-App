@@ -36,8 +36,6 @@ abstract class _LoginStoreBase with mobx.Store {
   @mobx.observable
   bool hasEmailError = false;
 
-  @mobx.observable
-  String? errorMessage;
 
   @mobx.observable
   AuthMode authMode = AuthMode.login;
@@ -65,9 +63,6 @@ abstract class _LoginStoreBase with mobx.Store {
         email: email,
       );
       await _userBox.putAsync(user);
-      errorMessage = null;
-    } catch (e) {
-      errorMessage = 'Failed to add user: $e';
     }
     finally {
       isLoading = false;
@@ -93,7 +88,11 @@ abstract class _LoginStoreBase with mobx.Store {
   }
 
   @mobx.action
-  void onLoginTap() {
+  Future<User?> onLoginTap() async{
+    if(authMode == AuthMode.login){
+      final user = await getUser();
+      return user;
+    }
     email = '';
     password = '';
     username = '';
@@ -101,10 +100,15 @@ abstract class _LoginStoreBase with mobx.Store {
     hasUsernameError = false;
     hasEmailError = false;
     authMode = AuthMode.login;
+    return null;
   }
 
   @mobx.action
-  void onSignUpButtonTapTap() {
+  Future<void> onSignUpButtonTapTap() async{
+    if(authMode == AuthMode.signup){
+      await addUser();
+      return;
+    }
     email = '';
     password = '';
     username = '';
@@ -115,11 +119,11 @@ abstract class _LoginStoreBase with mobx.Store {
   }
 
   @mobx.action
-  Future<void> getUser() async {
+  Future<User?> getUser() async {
     if(username.isEmpty || password.isEmpty){
       hasUsernameError = username.isEmpty;
       hasPasswordError = password.isEmpty;
-      return;
+      return null;
     }
     hasUsernameError = false;
     hasPasswordError = false;
@@ -134,17 +138,16 @@ abstract class _LoginStoreBase with mobx.Store {
 
       if (user != null) {
         currentUser = user;
-        errorMessage = null;
       } else {
         currentUser = null;
-        errorMessage = 'User not found or credentials invalid';
       }
     } catch (e) {
       currentUser = null;
-      errorMessage = 'Error fetching user: $e';
     }
     finally {
         isLoading = false;
     }
+    return currentUser;
+
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
@@ -79,16 +80,14 @@ class _TopWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: ClipPath(
-      clipper: WaveClipper(),
-      child: Container(
-        color: AppColors.waveLightColor,
+    return Expanded(
+      child: ClipPath(
+        clipper: WaveClipper(),
+        child: Container(color: AppColors.waveLightColor),
       ),
-    ),
     );
   }
 }
-
 
 class _LoaderWidget extends StatelessWidget {
   const _LoaderWidget();
@@ -100,13 +99,13 @@ class _LoaderWidget extends StatelessWidget {
         final store = getLoginStore();
         return store.isLoading
             ? SizedBox.expand(
-          child: ColoredBox(
-            color: AppColors.backgroundLightColor.withAlpha(
-              (0.5 * 255).toInt(),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-        )
+              child: ColoredBox(
+                color: AppColors.backgroundLightColor.withAlpha(
+                  (0.5 * 255).toInt(),
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+            )
             : const SizedBox.shrink();
       },
     );
@@ -171,13 +170,13 @@ class _EmailInputWidget extends StatelessWidget {
           final store = getLoginStore();
           return store.authMode == AuthMode.signup
               ? CustomInputWidget(
-            onChanged: store.onEmailChanged,
-            textColor: AppColors.hintTextLightColor,
-            borderColor: AppColors.borderLightColor,
-            errorBorderColor: AppColors.errorLightColor,
-            hintText: AppTexts.emailHintText,
-            hasError: store.hasEmailError,
-          )
+                onChanged: store.onEmailChanged,
+                textColor: AppColors.hintTextLightColor,
+                borderColor: AppColors.borderLightColor,
+                errorBorderColor: AppColors.errorLightColor,
+                hintText: AppTexts.emailHintText,
+                hasError: store.hasEmailError,
+              )
               : const SizedBox.shrink();
         },
       ),
@@ -197,8 +196,8 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
           final store = getLoginStore();
           return LoginAndSignUpButton(
             authMode: store.authMode,
-            onLoginTap: store.onLoginTap,
-            onSignUpTap: store.onSignUpButtonTapTap,
+            onLoginTap: () => _onLoginTap(context),
+            onSignUpTap: () => _onSignUpButtonTap(context),
             activeColor: Color(0xFF1A5CFF),
             inactiveColor: Colors.lightBlue,
             textActiveColor: Colors.white,
@@ -209,5 +208,24 @@ class _LoginAndSignUpButtonWidget extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _onLoginTap(BuildContext context) async {
+    final user = await getLoginStore().onLoginTap();
+    if (user != null) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        MainNavigationRouteNames.home,
+        (_) => false,
+        arguments: user,
+      );
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User not found')));
+    }
+  }
+
+  Future<void> _onSignUpButtonTap(BuildContext context) async{
+    await getLoginStore().onSignUpButtonTapTap();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User added successfully')));
   }
 }

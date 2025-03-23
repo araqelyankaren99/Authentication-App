@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
+import 'package:flutter_authentication_app/src/domain/entity/user.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/home/screen.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/screen.dart';
 
@@ -19,9 +20,13 @@ class MainNavigation {
         );
 
       case MainNavigationRouteNames.home:
+        final arguments = settings.arguments;
+        if(arguments is! User){
+          return MaterialPageRoute(builder: (_) => _makeErrorScreen());
+        }
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => _makeHomeScreen(),
+          builder: (_) => _makeHomeScreen(arguments),
         );
 
       default:
@@ -37,8 +42,8 @@ Widget _makeLoginScreen() {
   return const LoginScreen();
 }
 
-Widget _makeHomeScreen() {
-  return const HomeScreen();
+Widget _makeHomeScreen(User user) {
+  return HomeScreen(user: user,);
 }
 
 Widget _makeErrorScreen() {
