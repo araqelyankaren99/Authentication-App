@@ -41,6 +41,7 @@ abstract class _LoginStoreBase with mobx.Store {
       errorMessage = null;
     } catch (e) {
       currentUser = null;
+      errorMessage = e.toString();
     } finally {
       isLoading = false;
     }

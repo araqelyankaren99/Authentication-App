@@ -318,7 +318,14 @@ class _SignUpButton extends StatelessWidget {
   }
 
   Future<void> _onSignUpButtonTap(BuildContext context) async {
-    await getLoginStore().addUser();
+    try {
+      await getLoginStore().addUser();
+    }
+    on Exception catch(error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
+    }
     final store = getLoginStore();
     if(store.errorMessage != null){
       return;

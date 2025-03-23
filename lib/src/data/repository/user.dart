@@ -14,6 +14,13 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<void> addUser(User user) async {
+    final query = _userBox.query(User_.username.equals(user.username)).build();
+    final existingUser = query.findFirst();
+    query.close();
+
+    if (existingUser != null) {
+      throw Exception('User with username "${user.username}" already exists');
+    }
     await _userBox.putAsync(user);
   }
 
