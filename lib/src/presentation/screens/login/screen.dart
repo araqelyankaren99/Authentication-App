@@ -291,7 +291,7 @@ class _LoginButton extends StatelessWidget {
       return;
     }
 
-    if (user != null) {
+    if (user == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(AppTexts.userNotFound),),);
@@ -345,6 +345,9 @@ class _SignUpButton extends StatelessWidget {
     }
     final store = getLoginStore();
     if (store.errorMessage != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(store.errorMessage!)));
       return;
     }
     ScaffoldMessenger.of(

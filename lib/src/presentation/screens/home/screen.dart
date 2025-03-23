@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_authentication_app/src/config/navigation/route_names.dart';
 import 'package:flutter_authentication_app/src/config/theme/theme.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.dart';
 import 'package:flutter_authentication_app/src/utils/resources/texts.dart';
@@ -20,11 +21,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: theme?.backgroundColor,
       body: SafeArea(
-        child: Text(
-          '${AppTexts.hello} \n ${widget.user.username}',
-          style: TextStyle(fontSize: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${AppTexts.hello} \n${widget.user.username}',
+              style: TextStyle(fontSize: 20),
+            ),
+            IconButton(
+              onPressed: () => _onLogout(context),
+              icon: Icon(Icons.logout),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _onLogout(BuildContext context) {
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(MainNavigationRouteNames.login, (_) => false);
   }
 }
