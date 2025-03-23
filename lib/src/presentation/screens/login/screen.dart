@@ -136,6 +136,7 @@ class _UsernameInputWidget extends StatelessWidget {
       builder: (_) {
         final store = getLoginStore();
         return CustomInputWidget(
+          controller: store.usernameController,
           onChanged: store.onUsernameChanged,
           textColor: AppColors.hintTextLightColor,
           borderColor: AppColors.borderLightColor,
@@ -159,6 +160,7 @@ class _PasswordInputWidget extends StatelessWidget {
         builder: (_) {
           final store = getLoginStore();
           return CustomInputWidget(
+            controller: store.passwordController,
             onChanged: store.onPasswordChanged,
             isPassword: true,
             textColor: AppColors.hintTextLightColor,
@@ -185,6 +187,7 @@ class _EmailInputWidget extends StatelessWidget {
           final store = getLoginStore();
           return store.authMode == AuthMode.signup
               ? CustomInputWidget(
+                controller: store.emailController,
                 onChanged: store.onEmailChanged,
                 textColor: AppColors.hintTextLightColor,
                 borderColor: AppColors.borderLightColor,
@@ -273,7 +276,7 @@ class _LoginButton extends StatelessWidget {
   }
 
   Future<void> _onLoginButtonTap(BuildContext context) async {
-    if(getLoginStore().username.isEmpty || getLoginStore().password.isEmpty){
+    if (getLoginStore().username.isEmpty || getLoginStore().password.isEmpty) {
       return;
     }
     final user = await getLoginStore().getUser();
@@ -313,11 +316,13 @@ class _SignUpButton extends StatelessWidget {
   }
 
   Future<void> _onSignUpButtonTap(BuildContext context) async {
-    if(getLoginStore().username.isEmpty || getLoginStore().password.isEmpty || getLoginStore().email.isEmpty){
+    if (getLoginStore().username.isEmpty ||
+        getLoginStore().password.isEmpty ||
+        getLoginStore().email.isEmpty) {
       return;
     }
 
-      await getLoginStore().addUser();
+    await getLoginStore().addUser();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('User added successfully')));

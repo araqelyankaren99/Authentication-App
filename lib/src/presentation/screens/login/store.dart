@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_authentication_app/objectbox.g.dart' as objectbox;
 import 'package:flutter_authentication_app/objectbox.g.dart';
 import 'package:flutter_authentication_app/src/domain/entity/user.dart';
@@ -20,6 +21,15 @@ abstract class _LoginStoreBase with mobx.Store {
 
   @mobx.observable
   String username = '';
+
+  @mobx.observable
+  TextEditingController usernameController = TextEditingController();
+
+  @mobx.observable
+  TextEditingController passwordController = TextEditingController();
+
+  @mobx.observable
+  TextEditingController emailController = TextEditingController();
 
   @mobx.observable
   String password = '';
@@ -98,6 +108,9 @@ abstract class _LoginStoreBase with mobx.Store {
     hasUsernameError = false;
     hasEmailError = false;
     authMode = AuthMode.login;
+    emailController.clear();
+    passwordController.clear();
+    usernameController.clear();
   }
 
   @mobx.action
@@ -109,6 +122,9 @@ abstract class _LoginStoreBase with mobx.Store {
     hasUsernameError = false;
     hasEmailError = false;
     authMode = AuthMode.signup;
+    emailController.clear();
+    passwordController.clear();
+    usernameController.clear();
   }
 
   @mobx.action

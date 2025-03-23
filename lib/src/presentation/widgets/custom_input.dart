@@ -18,6 +18,7 @@ class CustomInputWidget extends StatelessWidget {
     this.showCursor = true,
     this.radius = 16,
     this.hintText,
+    this.controller,
   });
 
   final OnChanged onChanged;
@@ -32,11 +33,13 @@ class CustomInputWidget extends StatelessWidget {
   final Color borderColor;
   final Color errorBorderColor;
   final bool showCursor;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     final effectiveBorderColor = hasError ? errorBorderColor : borderColor;
     return TextField(
+      controller: controller,
       autocorrect: false,
       showCursor: hasError ? false : showCursor,
       cursorColor: textColor,
