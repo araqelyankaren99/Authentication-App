@@ -3,6 +3,7 @@ import 'package:flutter_authentication_app/src/config/navigation/route_names.dar
 import 'package:flutter_authentication_app/src/domain/entity/user.g.dart';
 import 'package:flutter_authentication_app/src/presentation/screens/login/store.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/custom_input.dart';
+import 'package:flutter_authentication_app/src/presentation/widgets/empty.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/keyboard_dismissable.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/login_and_sign_up_button.dart';
 import 'package:flutter_authentication_app/src/presentation/widgets/wave_clipper.dart';
@@ -114,7 +115,7 @@ class _LoaderWidget extends StatelessWidget {
                 child: const Center(child: CircularProgressIndicator()),
               ),
             )
-            : const SizedBox.shrink();
+            : const EmptyWidget();
       },
     );
   }
@@ -185,7 +186,7 @@ class _EmailInputWidget extends StatelessWidget {
                 hintText: AppTexts.emailHintText,
                 hasError: store.hasEmailError,
               )
-              : const SizedBox.shrink();
+              : const EmptyWidget();
         },
       ),
     );
