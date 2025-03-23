@@ -38,7 +38,7 @@ class CustomInputWidget extends StatelessWidget {
     final effectiveBorderColor = hasError ? errorBorderColor : borderColor;
     return TextField(
       autocorrect: false,
-      showCursor: showCursor,
+      showCursor: hasError ? false : showCursor,
       cursorColor: textColor,
       textInputAction: textInputAction,
       obscureText: isPassword,
